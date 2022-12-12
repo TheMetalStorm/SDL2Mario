@@ -3,6 +3,7 @@
 //
 
 #include <iostream>
+#include <cmath>
 #include "Utils.h"
 
 SDL_Texture *Utils::getTexture(SDL_Renderer *renderer, const char *filePath) {
@@ -20,4 +21,14 @@ SDL_Texture *Utils::getTexture(SDL_Renderer *renderer, const char *filePath) {
 
 
     return spriteTexture;
+}
+
+int Utils::sgn(float x) {
+    if (x > 0) return 1;
+    if (x < 0) return -1;
+    return 0;
+}
+
+bool Utils::cmpf(float A, float B, float epsilon) {
+    return (fabs(A - B) < epsilon);
 }

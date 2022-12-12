@@ -23,8 +23,11 @@ const float runningAcceleration = 0x000E4/pixelLength;
 const float maxRunSpeed = 0x02900/pixelLength;
 
 //decel
-const float releaseDecel = 0x000D0/pixelLength;
+const float releaseDecel = 0x000D0 / pixelLength;
+const float skiddingDecel = 0x001A0 / pixelLength;
 
+
+const float skidTurnaroundSpeed = 0x00900 / pixelLength;
 
 
 
@@ -46,12 +49,17 @@ public:
     }
 
     void setPos(Vector2 newPos) {
-        this->pos= newPos;
+        this->position= newPos;
     }
 
 private:
+
+    bool pressingRight = false;
+    bool pressingLeft = false;
+    bool isRunning = false;
+
     Vector2 vel{};
-    Vector2 pos{};
+    Vector2 position {0, 400};
 
     SDL_Texture *sprite{};
 

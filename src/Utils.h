@@ -15,7 +15,8 @@ struct Vector2
 class Utils {
 public:
     static SDL_Texture *getTexture(SDL_Renderer *renderer, const char *filePath);
-
+    static int sgn(float x);
+    static bool cmpf(float A, float B, float epsilon = 0.005f);
 };
 
 
