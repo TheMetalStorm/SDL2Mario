@@ -5,6 +5,11 @@
 #include <iostream>
 #include "Mario.h"
 
+//playerPhysics Guide i am (loosely) following
+//https://web.archive.org/web/20130807122227/http://i276.photobucket.com/albums/kk21/jdaster64/smb_playerphysics.png
+//SMB dissasembly
+//https://gist.github.com/1wErt3r/4048722#file-smbdis-asm
+
 void Mario::update(const Uint8 *keyStates) {
     int dir;
     bool isSkidding;
@@ -22,10 +27,25 @@ void Mario::update(const Uint8 *keyStates) {
     }
     isRunning = keyStates[SDL_SCANCODE_LCTRL];
 
+    if(position.y == 400){
+        isGrounded = true;
+    }
+    else
+        isGrounded = false;
 
+    //TODO: when releasing run button, continue run for 10 frames then slow to walk speed instantly
+    //TODO: jumping
+
+    groundMovement(dir, isSkidding);
+    std::cout << isGrounded << std::endl;
+    //airMovement(dir);
+
+}
+
+void Mario::groundMovement(int dir, bool isSkidding) {
     if (pressingRight) {
         isSkidding = false;
-        if (Utils::sgn(vel.x) == -1  && abs(vel.x) > skidTurnaroundSpeed) {
+        if (Utils::sgn(vel.x) == -1 && abs(vel.x) > skidTurnaroundSpeed) {
             isSkidding = true;
         }
 
@@ -37,7 +57,7 @@ void Mario::update(const Uint8 *keyStates) {
             //accelerate
             if(isRunning) vel.x += walkAcceleration * (float) dir;
             else
-            vel.x += walkAcceleration * (float) dir;
+                vel.x += walkAcceleration * (float) dir;
 
             //limit vel to current max
             if(isRunning){
@@ -57,8 +77,6 @@ void Mario::update(const Uint8 *keyStates) {
             }
 
         }
-
-
 
     } else if (pressingLeft) {
         isSkidding = false;
@@ -99,9 +117,25 @@ void Mario::update(const Uint8 *keyStates) {
     if (isSkidding){
         vel.x += skiddingDecel * Utils::sgn(-vel.x);
     }
-    std::cout << vel.x << std::endl;
 
     position.x += vel.x;
+}
+
+void Mario::airMovement(int dir) {
+
+    if(isGrounded){
+        float startJumpXVel = vel.x;
+    }
+    else{
+        horizontalAirMovement();
+    }
+
+
+
+}
+
+void Mario::horizontalAirMovement() const {//TODO: On press jump
+
 
 
 }
@@ -124,4 +158,6 @@ void Mario::init(SDL_Renderer *renderer) {
     spriteRect.h = spriteHeight;
 
 }
+
+
 

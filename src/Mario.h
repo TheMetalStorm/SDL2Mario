@@ -26,10 +26,26 @@ const float maxRunSpeed = 0x02900/pixelLength;
 const float releaseDecel = 0x000D0 / pixelLength;
 const float skiddingDecel = 0x001A0 / pixelLength;
 
-
+//Skidding
 const float skidTurnaroundSpeed = 0x00900 / pixelLength;
 
+//Jumping
+const float jumpingSpeedThreshold = 0x01900 / pixelLength;
 
+const float initialVelSlow = 0x04000 /pixelLength;
+const float initialVelMiddle = 0x04000 /pixelLength;
+const float initialVelHigh = 0x05000 /pixelLength;
+const float initialVelLevelEntry = 0x00000 /pixelLength;
+
+const float holdingAGravitySlow = 0x00200 / pixelLength;
+const float holdingAGravityMiddle = 0x001E0 / pixelLength;
+const float holdingAGravitySlowHigh = 0x00280 / pixelLength;
+const float holdingAGravityLevelEntry = 0x00280 / pixelLength;
+
+const float fallingGravitySlow = 0x00700 / pixelLength;
+const float fallingGravityMiddle = 0x00600 / pixelLength;
+const float fallingGravitySlowHigh = 0x00900 / pixelLength;
+const float fallingGravityLevelEntry = 0x00280 / pixelLength;
 
 class Mario {
 
@@ -57,6 +73,7 @@ private:
     bool pressingRight = false;
     bool pressingLeft = false;
     bool isRunning = false;
+    bool isGrounded = false;
 
     Vector2 vel{};
     Vector2 position {0, 400};
@@ -67,6 +84,11 @@ private:
 
     SDL_Rect spriteRect{};
 
+    void groundMovement(int dir, bool isSkidding);
+
+    void airMovement(int dir);
+
+    void horizontalAirMovement() const;
 };
 
 
