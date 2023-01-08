@@ -25,6 +25,12 @@ void Mario::update(const Uint8 *keyStates) {
         pressingRight = true;
         dir = 1;
     }
+    if(keyStates[SDL_SCANCODE_SPACE]){
+        isPressingJump = true;
+    }
+    else{
+        isPressingJump = false;
+    }
     isRunning = keyStates[SDL_SCANCODE_LCTRL];
 
     if(position.y == 400){
@@ -37,8 +43,8 @@ void Mario::update(const Uint8 *keyStates) {
     //TODO: jumping
 
     groundMovement(dir, isSkidding);
-    std::cout << isGrounded << std::endl;
-    //airMovement(dir);
+    std::cout << isPressingJump << std::endl;
+    airMovement(dir);
 
 }
 
@@ -123,21 +129,52 @@ void Mario::groundMovement(int dir, bool isSkidding) {
 
 void Mario::airMovement(int dir) {
 
+    if(isPressingJump){
+        isGrounded = false;
+    }
     if(isGrounded){
-        float startJumpXVel = vel.x;
+        startJumpXVel = vel.x;
+        return;
     }
-    else{
-        horizontalAirMovement();
-    }
+
+
+    horizontalAirMovement(dir);
+
 
 
 
 }
 
-void Mario::horizontalAirMovement() const {//TODO: On press jump
+void Mario::horizontalAirMovement(int dir)  {
 
+        if(Mario::changedDirection()){
+            if(abs(vel.x) >= maxWalkSpeed){
+                vel.x -= airLosingMomentumRun * (float) dir;
+            }
+             else {
+                 if(abs(startJumpXVel) >= airLosingMomentumStartedJumpCutoff){
+                     vel.x -= airLosingMomentumWalkFastStartVel* (float) dir;
+                 }
+                 else {
+                     vel.x -= airLosingMomentumWalkSlowStartVel * (float) dir;
+                 }
+             }
+        }
+        else{
+            if(abs(vel.x) < maxWalkSpeed){
+                vel.x += airGainingMomentumWalk * (float) dir;
+            }
+            else{
+                vel.x += airGainingMomentumRun * (float) dir;
+            }
+        }
 
-
+        if(abs(startJumpXVel) < maxAirSpeedStartedSlow){
+            Utils::clip(vel.x, std::min(.0f, maxAirSpeedStartedSlow*dir), std::max(.0f, maxAirSpeedStartedSlow*dir));
+        }
+        else if(abs(startJumpXVel) >= maxAirSpeedStartedSlow){
+            Utils::clip(vel.x, std::min(.0f, maxAirSpeedStartedFast*dir), std::max(.0f, maxAirSpeedStartedFast*dir));
+        }
 }
 
 void Mario::render(SDL_Renderer *renderer) {
@@ -157,6 +194,23 @@ void Mario::init(SDL_Renderer *renderer) {
     spriteRect.w = spriteWidth;
     spriteRect.h = spriteHeight;
 
+}
+
+bool Mario::changedDirection() const {
+    if(pressingLeft){
+        if(Utils::sgn(vel.x) == -1){
+            return false;
+        }
+        else return true;
+    }
+    else if(pressingRight)
+    {
+        if(Utils::sgn(vel.x) == 1){
+            return false;
+        }
+        else return true;
+    }
+    return false;
 }
 
 

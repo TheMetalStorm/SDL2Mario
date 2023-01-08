@@ -32,3 +32,8 @@ int Utils::sgn(float x) {
 bool Utils::cmpf(float A, float B, float epsilon) {
     return (fabs(A - B) < epsilon);
 }
+
+float Utils::clip(float n, float lower, float upper) {
+    return std::max(lower, std::min(n, upper));
+
+}

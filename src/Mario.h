@@ -29,8 +29,18 @@ const float skiddingDecel = 0x001A0 / pixelLength;
 //Skidding
 const float skidTurnaroundSpeed = 0x00900 / pixelLength;
 
+//airMovement
+const float airGainingMomentumWalk = 0x00098/pixelLength;
+const float airGainingMomentumRun = 0x000E4/pixelLength;
+
+const float airLosingMomentumRun = 0x0004E/pixelLength;
+const float airLosingMomentumWalkFastStartVel = 0x000D0/pixelLength;
+const float airLosingMomentumWalkSlowStartVel = 0x00098/pixelLength;
+const float airLosingMomentumStartedJumpCutoff = 0x01D00/pixelLength;
+
+const float maxAirSpeedStartedSlow = 0x01900 /pixelLength;
+const float maxAirSpeedStartedFast = 0x02900 /pixelLength;
 //Jumping
-const float jumpingSpeedThreshold = 0x01900 / pixelLength;
 
 const float initialVelSlow = 0x04000 /pixelLength;
 const float initialVelMiddle = 0x04000 /pixelLength;
@@ -74,10 +84,12 @@ private:
     bool pressingLeft = false;
     bool isRunning = false;
     bool isGrounded = false;
+    bool isPressingJump = false;
 
     Vector2 vel{};
     Vector2 position {0, 400};
 
+    float startJumpXVel = 0;
     SDL_Texture *sprite{};
 
     int spriteWidth = 0, spriteHeight = 0;
@@ -88,7 +100,9 @@ private:
 
     void airMovement(int dir);
 
-    void horizontalAirMovement() const;
+    void horizontalAirMovement(int i);
+
+    bool changedDirection() const;
 };
 
 

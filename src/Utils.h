@@ -17,6 +17,7 @@ public:
     static SDL_Texture *getTexture(SDL_Renderer *renderer, const char *filePath);
     static int sgn(float x);
     static bool cmpf(float A, float B, float epsilon = 0.005f);
+    static float clip(float n, float lower, float upper);
 };
 
 
